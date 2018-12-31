@@ -1,15 +1,23 @@
 /// <reference path="../phaser.d.ts"/>
 import 'phaser'
 
-import {SlideArea} from '../components/slidearea'
+import {PowerBar} from '../components/powerbar'
+
+const MAX_POWER = 100;
+const SPEED_INIT = 40;
+const GRAVITY = 10;
+const XPOINT_CHANGE = 1800;
 
 class MainScene extends Phaser.Scene {
+    private power:number = 0;
+    private powerBar:PowerBar;
+    private player:Phaser.Physics.Arcade.Image;
+
     init() {
-        console.log("init()");
+        this.power = 0;
     }
 
     preload() {
-        console.log("preload()");
         this.load.setBaseURL('http://127.0.0.1:8080');
 
         this.load.image('inoshishi', 'assets/img/inoshishi.png');
@@ -32,21 +40,33 @@ class MainScene extends Phaser.Scene {
         platforms.create(0, 600, 'ground-base').setOrigin(0, 1).refreshBody();
         platforms.create(2400, 600, 'ground-jump').setOrigin(0, 1).refreshBody();
 
-        var player = this.physics.add.image(100, 450, 'inoshishi').setOrigin(0.5, 1);
-        player.setCollideWorldBounds(true);
+        this.player = this.physics.add.image(100, 450, 'inoshishi').setOrigin(0.5, 1);
+        this.player.setCollideWorldBounds(true);
 
-        this.physics.add.collider(player, platforms);
+        this.physics.add.collider(this.player, platforms);
         
-        this.cameras.main.startFollow(player);
-        this.cameras.main.followOffset.set(400, 0);
+        this.cameras.main.startFollow(this.player);
+        this.cameras.main.followOffset.set(-300, 0);
 
-        var slide_area = new SlideArea(this);
+        this.powerBar = new PowerBar(this, 25, 25, MAX_POWER);
+        this.input.on('pointerdown', () => this.increasePower());
 
-        player.setVelocityX(40);
+        this.player.setVelocityX(SPEED_INIT);
+        this.player.setGravityY(GRAVITY);
     }
 
     // メインループ
     update() {
+        
+    }
+
+    increasePower() {
+        if (this.player.x >= XPOINT_CHANGE) return;
+        if (this.power >= MAX_POWER) return;
+        this.power += 1;
+        this.powerBar.updateBar(this.power)
+
+        this.player.setVelocityX(SPEED_INIT + 1 * this.power);
     }
 }
 
