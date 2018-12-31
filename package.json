@@ -4,8 +4,9 @@
   "description": "猪年ということで、勢いでつくったゲーム",
   "main": "index.js",
   "scripts": {
+    "build": "webpack",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "webpack-dev-server --hot --inline --watch-content-base"
+    "start": "npm run build && webpack-dev-server --hot --inline --watch-content-base"
   },
   "repository": {
     "type": "git",
