@@ -1,3 +1,5 @@
+/// <reference path="./phaser.d.ts"/>
+
 import './styles.scss';
 import 'phaser';
 
