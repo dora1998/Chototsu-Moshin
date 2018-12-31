@@ -3,7 +3,7 @@
 import './styles.scss';
 import 'phaser';
 
-import MainScene from './scenes/main'
+import {MainScene} from './scenes/main'
 
 var config = {
     type: Phaser.AUTO,

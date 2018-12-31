@@ -7,6 +7,7 @@ class MainScene extends Phaser.Scene {
     }
 
     preload() {
+        console.log("preload()");
         this.load.setBaseURL('http://labs.phaser.io');
 
         this.load.image('sky', 'assets/skies/space3.png');
@@ -41,4 +42,4 @@ class MainScene extends Phaser.Scene {
     }
 }
 
-export default {MainScene};
+export {MainScene};
