@@ -1,6 +1,8 @@
 /// <reference path="../phaser.d.ts"/>
 import 'phaser'
 
+import {SlideArea} from '../components/slidearea'
+
 class MainScene extends Phaser.Scene {
     init() {
         console.log("init()");
@@ -8,37 +10,43 @@ class MainScene extends Phaser.Scene {
 
     preload() {
         console.log("preload()");
-        this.load.setBaseURL('http://labs.phaser.io');
+        this.load.setBaseURL('http://127.0.0.1:8080');
 
-        this.load.image('sky', 'assets/skies/space3.png');
-        this.load.image('logo', 'assets/sprites/phaser3-logo.png');
-        this.load.image('red', 'assets/particles/red.png');
+        this.load.image('inoshishi', 'assets/img/inoshishi.png');
+
+        this.load.image('ground-base', 'assets/img/ground-base.png');
+        this.load.image('ground-jump', 'assets/img/ground-jump.png');
     }
 
     // おもにゲームオブジェクト関連の初期化を行う
     create() {
-        this.add.image(400, 300, 'sky');
+        this.cameras.main.setBounds(0, 0, 2800, 600);
+        this.physics.world.setBounds(0, 0, 2800, 600);
 
-        var particles = this.add.particles('red');
+        var graphics = this.add.graphics();
 
-        var emitter = particles.createEmitter({
-            speed: 100,
-            scale: { start: 1, end: 0 },
-            blendMode: Phaser.BlendModes.ADD
-        });
+        graphics.fillStyle(0xffffff, 1);
+        graphics.fillRect(0, 0, 2800, 600);
+        
+        var platforms = this.physics.add.staticGroup();
+        platforms.create(0, 600, 'ground-base').setOrigin(0, 1).refreshBody();
+        platforms.create(2400, 600, 'ground-jump').setOrigin(0, 1).refreshBody();
 
-        var logo = this.physics.add.image(400, 100, 'logo');
+        var player = this.physics.add.image(100, 450, 'inoshishi').setOrigin(0.5, 1);
+        player.setCollideWorldBounds(true);
 
-        logo.setVelocity(100, 200);
-        logo.setBounce(1, 1);
-        logo.setCollideWorldBounds(true);
+        this.physics.add.collider(player, platforms);
+        
+        this.cameras.main.startFollow(player);
+        this.cameras.main.followOffset.set(400, 0);
 
-        emitter.startFollow(logo);
+        var slide_area = new SlideArea(this);
+
+        player.setVelocityX(40);
     }
 
     // メインループ
     update() {
-        console.log("update()");
     }
 }
 

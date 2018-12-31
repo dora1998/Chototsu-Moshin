@@ -6,7 +6,8 @@
   "scripts": {
     "build": "webpack --mode production",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "npm run build && webpack-dev-server --hot --inline --watch-content-base"
+    "dev": "webpack --mode development && webpack-dev-server --mode development",
+    "start": "npm run build"
   },
   "repository": {
     "type": "git",
@@ -24,6 +25,7 @@
     "babel-loader": "^8.0.4",
     "babel-preset-env": "^1.7.0",
     "css-loader": "^2.1.0",
+    "expose-loader": "^0.7.5",
     "i": "^0.3.6",
     "node-sass": "^4.11.0",
     "postcss-loader": "^3.0.0",

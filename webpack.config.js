@@ -4,6 +4,10 @@ const MODE = 'development';
  
 // ソースマップの利用有無(productionのときはソースマップを利用しない)
 const enabledSourceMap = (MODE === 'development');
+
+var path = require('path');
+var pathToPhaser = path.join(__dirname, '/node_modules/phaser/');
+var phaser = path.join(pathToPhaser, 'dist/phaser.js');
  
 module.exports = {
   // モード値を production に設定すると最適化された状態で、
@@ -60,7 +64,8 @@ module.exports = {
       {
           test: /\.ts/,
           use: 'ts-loader'
-      }
+      },
+      { test: /phaser\.js$/, loader: 'expose-loader?Phaser' }
     ],
   },
 
@@ -68,6 +73,9 @@ module.exports = {
       extensions: [
           '.js',
           '.ts'
-      ]
+      ],
+      alias: {
+        phaser: phaser
+      }
   }
 };
