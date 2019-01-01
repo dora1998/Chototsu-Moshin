@@ -28,7 +28,6 @@ class Button{
         this.bgGraphics.fillRect(this.x + 5, this.y + 5, this.width - 10, this.height - 10).setScrollFactor(0);
     }
     onClicked() {
-        console.log("onClicked");
         this.listener();
     }
     setListener(listener: () => void) {
