@@ -25,7 +25,7 @@ class Button{
         this.bgGraphics.fillStyle(0xceaa6f);
         this.bgGraphics.fillRect(this.x, this.y, this.width, this.height).setScrollFactor(0);
         this.bgGraphics.fillStyle(0x635236);
-        this.bgGraphics.fillRect(this.x + 10, this.y + 10, this.width - 20, this.height - 20).setScrollFactor(0);
+        this.bgGraphics.fillRect(this.x + 5, this.y + 5, this.width - 10, this.height - 10).setScrollFactor(0);
     }
     onClicked() {
         console.log("onClicked");
