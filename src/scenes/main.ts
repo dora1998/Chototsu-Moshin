@@ -18,6 +18,7 @@ class MainScene extends Phaser.Scene {
     private ground_chakuchi:Phaser.Physics.Arcade.Image;
 
     private currentYear:Phaser.GameObjects.Text;
+    private isJumped = false;
 
     init() {
         this.power = 0;
@@ -60,7 +61,7 @@ class MainScene extends Phaser.Scene {
 
         this.createStage();
 
-        this.currentYear = this.add.text(400, 250, '2019', { fontFamily: 'Arial', fontSize: 72, color: '#000000', align: 'center' }).setOrigin(0.5).setShadow(2, 2, "#333333", 2, false, true).setScrollFactor(0);
+        this.currentYear = this.add.text(400, 250, '連打でダッシュ！', { fontSize: 72, color: '#000000', align: 'center' }).setOrigin(0.5).setShadow(2, 2, "#333333", 2, false, true).setScrollFactor(0);
         WebFont.load({
             google: {
                 families: [ 'Righteous' ]
@@ -68,7 +69,7 @@ class MainScene extends Phaser.Scene {
             active: () => 
             {
                 let uribos = this.physics.add.group({ allowGravity: false });
-                this.currentYear.setFontFamily('Righteous');
+                
                 for (let i = 2031; i <= (YEAR_START + MAX_YEAR); i += 12) {
                     this.add.text(2800 + WIDTH_PER_YEAR * (i - YEAR_START + 0.5), 500, `${i}`, { fontFamily: 'Righteous', fontSize: 32, color: '#ffffff', align: 'center' }).setOrigin(0.5);
                     uribos.add(this.physics.add.image(2800 + WIDTH_PER_YEAR * (i - YEAR_START + 0.5), 450, 'uribo').setOrigin(0.5, 1), true);
@@ -83,12 +84,15 @@ class MainScene extends Phaser.Scene {
 
     // メインループ
     update() {
-        if (this.player.body.velocity.x > 0 && this.player.x > 2700) {
+        if (this.player.body.velocity.x > 0 && (this.isJumped || this.player.x >= 2800)) {
             let year = 2019 + Math.floor((this.player.x - 2700) / WIDTH_PER_YEAR)
             this.currentYear.setText(`${year}`);
             this.currentYear.updateText();
         }
-        if (this.player.x >= XPOINT_CHANGE) this.jumpButton.setEnabled(true);
+        if (this.player.x >= XPOINT_CHANGE && !this.isJumped) {
+            this.jumpButton.setEnabled(true);
+            this.currentYear.setText(`線を見てジャンプ！`);
+        }
     }
 
     // 地面の作成
@@ -113,7 +117,28 @@ class MainScene extends Phaser.Scene {
     }
 
     jump() {
-        this.player.setVelocityY(-100);
+        let score = this.getJumpScore();
+        this.player.setVelocityY(-100 * (1 - score));
+
+        let comment = 'BAD'
+        if (score < 0.05) {
+            comment = 'EXCELLENT';
+        } else if (score < 0.2) {
+            comment = 'GREAT'
+        } else if (score < 0.4) {
+            comment = 'GOOD'
+        }
+        this.add.text(400, 320, comment, { fontFamily: 'Righteous', fontSize: 48, color: '#c1272d', align: 'center' }).setOrigin(0.5).setScrollFactor(0);
+
+        this.isJumped = true;
+        this.currentYear.setFontFamily('Righteous');
+    }
+    getJumpScore() {
+        const JUSTLINE = 2700;
+        let rightPos = this.player.x + (this.player.width / 2);
+        if (rightPos < 2400 || rightPos > 2800) return 1;
+        let dif = Math.abs(rightPos - JUSTLINE) / 300;
+        return dif;
     }
 
     // 地面に一度着いたら終わり
