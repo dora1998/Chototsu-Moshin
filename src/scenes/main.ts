@@ -120,6 +120,7 @@ class MainScene extends Phaser.Scene {
     }
 
     jump() {
+        if (this.isJumped) return;
         let score = this.getJumpScore();
         this.player.setVelocityY(-100 * (1 - score));
 

@@ -73,7 +73,8 @@ module.exports = {
 
   plugins: [
     new webpack.DefinePlugin({
-        BASE_URL: JSON.stringify("http://127.0.0.1:8080"),
+        // BASE_URL: JSON.stringify("http://127.0.0.1:8080"),
+        BASE_URL: JSON.stringify("https://dora1998.github.io/Chototsu-Moshin/"),
     })
   ],
 
