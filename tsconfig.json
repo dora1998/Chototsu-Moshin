@@ -11,5 +11,9 @@
   },
   "include": [
     "./src/**/*"
+  ],
+  "files": [
+    "./src/phaser.d.ts",
+    "./src/definevalues.d.ts"
   ]
 }

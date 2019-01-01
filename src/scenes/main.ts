@@ -1,7 +1,5 @@
-/// <reference path="../phaser.d.ts"/>
-import 'phaser'
-
 import {PowerBar} from '../components/powerbar'
+import { Button } from '../atoms/button';
 
 const MAX_POWER = 100;
 const SPEED_INIT = 40;
@@ -12,13 +10,14 @@ class MainScene extends Phaser.Scene {
     private power:number = 0;
     private powerBar:PowerBar;
     private player:Phaser.Physics.Arcade.Image;
+    private jumpButton:Button;
 
     init() {
         this.power = 0;
     }
 
     preload() {
-        this.load.setBaseURL('http://127.0.0.1:8080');
+        this.load.setBaseURL(BASE_URL);
 
         this.load.image('inoshishi', 'assets/img/inoshishi.png');
 
@@ -51,6 +50,9 @@ class MainScene extends Phaser.Scene {
         this.powerBar = new PowerBar(this, 25, 25, MAX_POWER);
         this.input.on('pointerdown', () => this.increasePower());
 
+        this.jumpButton = new Button(this, 500, 25, 150, 80, "ジャンプ");
+        this.jumpButton.setListener(() => this.jump())
+
         this.player.setVelocityX(SPEED_INIT);
         this.player.setGravityY(GRAVITY);
     }
@@ -66,7 +68,11 @@ class MainScene extends Phaser.Scene {
         this.power += 1;
         this.powerBar.updateBar(this.power)
 
-        this.player.setVelocityX(SPEED_INIT + 1 * this.power);
+        this.player.setAccelerationX(1 * this.power);
+    }
+
+    jump() {
+        this.player.setVelocityY(-300);
     }
 }
 

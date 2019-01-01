@@ -1,3 +1,5 @@
+var webpack = require('webpack');
+
 // [定数] webpack の出力オプションを指定します
 // 'production' か 'development' を指定
 const MODE = 'development';
@@ -68,6 +70,12 @@ module.exports = {
       { test: /phaser\.js$/, loader: 'expose-loader?Phaser' }
     ],
   },
+
+  plugins: [
+    new webpack.DefinePlugin({
+        BASE_URL: JSON.stringify("http://127.0.0.1:8080"),
+    })
+  ],
 
   resolve: {
       extensions: [
