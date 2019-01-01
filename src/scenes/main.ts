@@ -1,7 +1,5 @@
 import {PowerBar} from '../components/powerbar'
 import { Button } from '../atoms/button';
-import { ChakuchiGround } from '../components/chakuchi_ground';
-import { Uribo } from '../components/uribo';
 
 const MAX_POWER = 100;
 const SPEED_INIT = 40;
@@ -57,7 +55,7 @@ class MainScene extends Phaser.Scene {
         this.powerBar = new PowerBar(this, 25, 25, MAX_POWER);
         this.input.on('pointerdown', () => this.increasePower());
 
-        this.jumpButton = new Button(this, 500, 25, 150, 80, "ジャンプ");
+        this.jumpButton = new Button(this, 500, 50, 150, 80, "ジャンプ");
         this.jumpButton.setListener(() => this.jump())
 
         this.createStage();
@@ -90,6 +88,7 @@ class MainScene extends Phaser.Scene {
             this.currentYear.setText(`${year}`);
             this.currentYear.updateText();
         }
+        if (this.player.x >= XPOINT_CHANGE) this.jumpButton.setEnabled(true);
     }
 
     // 地面の作成
@@ -110,21 +109,23 @@ class MainScene extends Phaser.Scene {
         this.power += 1;
         this.powerBar.updateBar(this.power)
 
-        this.player.setAccelerationX(1 * this.power);
+        this.player.setAccelerationX(0.6 * this.power);
     }
 
     jump() {
         this.player.setVelocityY(-100);
     }
 
+    // 地面に一度着いたら終わり
     onCollideGround(player, ground) {
         player.setVelocityX(0);
         player.disableBody(true, false);
     }
 
+    // うりぼーに当たったときに更に飛ばす
     onHitUribo(player, uribo) {
         uribo.disableBody(true, true);
-        player.setVelocityX(200);
+        player.setVelocityX(50);
         player.setVelocityY(-100);
     }
 }
