@@ -1,5 +1,6 @@
 import {PowerBar} from '../components/powerbar'
 import { Button } from '../atoms/button';
+import { ShareButton } from '../components/sharebutton';
 
 const MAX_POWER = 100;
 const SPEED_INIT = 40;
@@ -18,7 +19,9 @@ class MainScene extends Phaser.Scene {
     private ground_chakuchi:Phaser.Physics.Arcade.Image;
 
     private currentYear:Phaser.GameObjects.Text;
+    private commentText:Phaser.GameObjects.Text;
     private isJumped = false;
+    private score:number;
 
     init() {
         this.power = 0;
@@ -85,8 +88,8 @@ class MainScene extends Phaser.Scene {
     // メインループ
     update() {
         if (this.player.body.velocity.x > 0 && (this.isJumped || this.player.x >= 2800)) {
-            let year = 2019 + Math.floor((this.player.x - 2700) / WIDTH_PER_YEAR)
-            this.currentYear.setText(`${year}`);
+            this.score = 2019 + Math.floor((this.player.x - 2700) / WIDTH_PER_YEAR)
+            this.currentYear.setText(`${this.score}`);
             this.currentYear.updateText();
         }
         if (this.player.x >= XPOINT_CHANGE && !this.isJumped) {
@@ -128,7 +131,7 @@ class MainScene extends Phaser.Scene {
         } else if (score < 0.4) {
             comment = 'GOOD'
         }
-        this.add.text(400, 320, comment, { fontFamily: 'Righteous', fontSize: 48, color: '#c1272d', align: 'center' }).setOrigin(0.5).setScrollFactor(0);
+        this.commentText = this.add.text(400, 320, comment, { fontFamily: 'Righteous', fontSize: 48, color: '#c1272d', align: 'center' }).setOrigin(0.5).setScrollFactor(0);
 
         this.isJumped = true;
         this.currentYear.setFontFamily('Righteous');
@@ -145,6 +148,8 @@ class MainScene extends Phaser.Scene {
     onCollideGround(player, ground) {
         player.setVelocityX(0);
         player.disableBody(true, false);
+
+        setTimeout(() => this.showShareButton(), 1000);
     }
 
     // うりぼーに当たったときに更に飛ばす
@@ -152,6 +157,12 @@ class MainScene extends Phaser.Scene {
         uribo.disableBody(true, true);
         player.setVelocityX(50);
         player.setVelocityY(-100);
+    }
+
+    // Twitterシェアボタンを表示
+    showShareButton() {
+        this.commentText.destroy();
+        new ShareButton(this, 250, 300, 300, 80, "ツイートする").setScore(this.score);
     }
 }
 
